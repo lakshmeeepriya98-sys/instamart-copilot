@@ -37,6 +37,11 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git pull origin main --rebase || true
+        git add outputs/ data/clean/ state/ data/instamart.db data/raw/ data/policies/
+        git commit -m "Auto-generate all pipeline outputs and datasets" || echo "No changes to commit"
+        git push
+      
         git add outputs/ data/clean/ state/ data/instamart.db data/raw/ data/policies/
         git commit -m "Auto-generate all pipeline outputs and datasets" || echo "No changes to commit"
         git push
