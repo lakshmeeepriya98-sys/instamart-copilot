@@ -41,7 +41,3 @@ jobs:
         git add outputs/ data/clean/ state/ data/instamart.db data/raw/ data/policies/
         git commit -m "Auto-generate all pipeline outputs and datasets" || echo "No changes to commit"
         git push
-      
-        git add outputs/ data/clean/ state/ data/instamart.db data/raw/ data/policies/
-        git commit -m "Auto-generate all pipeline outputs and datasets" || echo "No changes to commit"
-        git push
