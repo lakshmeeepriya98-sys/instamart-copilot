@@ -29,10 +29,12 @@ orders["order_amount"] = pd.to_numeric(orders["order_amount"], errors="coerce")
 orders["discount_pct"] = pd.to_numeric(orders["discount_pct"], errors="coerce").fillna(0)
 orders["quantity"] = pd.to_numeric(orders["quantity"], errors="coerce")
 
-merged = orders.merge(prod[["product_id", "price_inr", "category"]], on="product_id", how="left")
-na_amt = merged["order_amount"].isna()
+merged = orders.merge(prod[["product_id", "price_inr"]], on="product_id", how="left")
+na_amt = orders["order_amount"].isna()
 orders.loc[na_amt, "order_amount"] = np.round(
-    merged.loc[na_amt, "price_inr"] * merged.loc[na_amt, "quantity"] * (1 - merged.loc[na_amt, "discount_pct"] / 100.0), 2
+    merged.loc[na_amt, "price_inr"].values * 
+    orders.loc[na_amt, "quantity"].values * 
+    (1 - orders.loc[na_amt, "discount_pct"].values / 100.0), 2
 )
 
 orders["delivery_minutes"] = pd.to_numeric(orders["delivery_minutes"], errors="coerce")
