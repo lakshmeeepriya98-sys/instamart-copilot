@@ -29,12 +29,13 @@ orders["order_amount"] = pd.to_numeric(orders["order_amount"], errors="coerce")
 orders["discount_pct"] = pd.to_numeric(orders["discount_pct"], errors="coerce").fillna(0)
 orders["quantity"] = pd.to_numeric(orders["quantity"], errors="coerce")
 
-# Merge price cleanly and calculate missing amounts
-merged = orders.merge(prod[["product_id", "price_inr"]], on="product_id", how="left")
-calc_amount = np.round(
-    merged["price_inr"] * orders["quantity"] * (1 - orders["discount_pct"] / 100.0), 2
+# Direct dictionary mapping to calculate missing order amounts safely without Series index errors
+price_map = prod.set_index("product_id")["price_inr"].to_dict()
+unit_price = orders["product_id"].map(price_map)
+computed_amount = np.round(
+    unit_price * orders["quantity"] * (1.0 - orders["discount_pct"] / 100.0), 2
 )
-orders["order_amount"] = orders["order_amount"].fillna(calc_amount)
+orders["order_amount"] = orders["order_amount"].fillna(computed_amount)
 
 orders["delivery_minutes"] = pd.to_numeric(orders["delivery_minutes"], errors="coerce")
 orders.loc[orders["delivery_minutes"] < 0, "delivery_minutes"] = np.nan
