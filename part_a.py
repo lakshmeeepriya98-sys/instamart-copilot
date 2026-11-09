@@ -29,7 +29,7 @@ orders["order_amount"] = pd.to_numeric(orders["order_amount"], errors="coerce")
 orders["discount_pct"] = pd.to_numeric(orders["discount_pct"], errors="coerce").fillna(0)
 orders["quantity"] = pd.to_numeric(orders["quantity"], errors="coerce")
 
-# Direct dictionary mapping to calculate missing order amounts safely without Series index errors
+# Safe calculation without .loc index alignment
 price_map = prod.set_index("product_id")["price_inr"].to_dict()
 unit_price = orders["product_id"].map(price_map)
 computed_amount = np.round(
